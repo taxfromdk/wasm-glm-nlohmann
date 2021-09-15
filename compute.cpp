@@ -1,13 +1,12 @@
 //#include <iostream>
 #include <stdio.h>
-#include <emscripten/emscripten.h>
 
-#define JSON_NO_IO
-#define JSON_NOEXCEPTION
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 #include "json.hpp"
 #include "glm/glm.hpp"
-
-typedef long int i32_;
 
 using namespace glm;
 using namespace nlohmann;
@@ -31,6 +30,18 @@ uint8_t * cpp_compute(uint8_t* buffer, int l)
     vec3 c = cross(a,b);
     //printf("c %f %f %f\n", c.x, c.y, c.z);
     
+    //Simulate numerical process that will take a million iterations
+    vec3 z(0.0,0.0,0.0);
+    for(int i=0;i<1000000;i++)
+    {
+        z = z + ((c - z) * 0.00001f);
+        if(i%100000==0)
+        {
+            printf("%d %0.2f %0.2f %0.2f \n", i, z.x, z.y, z.z);
+        }        
+    }
+    c = z;
+
     //Construct output
     json output = {};
     output["c"] = {};
@@ -44,53 +55,37 @@ uint8_t * cpp_compute(uint8_t* buffer, int l)
     return buffer;
 }
   
-extern "C" {
-EMSCRIPTEN_KEEPALIVE    uint8_t* compute(uint8_t* buffer, int l) 
+extern "C" 
+{
+    #ifdef __EMSCRIPTEN__
+    EMSCRIPTEN_KEEPALIVE    uint8_t* compute(uint8_t* buffer, int l) 
     {
         return cpp_compute(buffer, l);    
     }
+    #endif
 
-#if 0
     #define BUFFER_SIZE (1024*1024)
     int main(int argc, char* argv[])
     {
-    if(argc != 2 || strcmp(argv[1], "-h") == 0)
-    {
-    printf("usage: %s input.json\n", argv[0]);
-    exit(1);
+        if(argc != 2 || strcmp(argv[1], "-h") == 0)
+        {
+            printf("usage: %s input.json\n", argv[0]);
+            exit(1);
+        }
+
+        //Input and output json must be below this size!!!
+        uint8_t buffer[BUFFER_SIZE];
+
+        FILE* f = fopen(argv[1], "r");    
+        int n = fread(buffer, 1, BUFFER_SIZE, f);
+        fclose(f);    
+
+        cpp_compute(buffer, n);
+
+        printf("%s", (char*)buffer);
+
+        return 0;
     }
-
-    //Input and output json must be below this size!!!
-    uint8_t buffer[BUFFER_SIZE];
-
-    FILE* f = fopen(argv[1], "r");    
-    int n = fread(buffer, 1, BUFFER_SIZE, f);
-    fclose(f);    
-
-    cpp_compute(buffer, n);
-
-    printf("%s", (char*)buffer);
-
-    return 0;
-    }
-#endif
 }
 
 
-#if 0
-int main() {
-    printf("Hello World\n");
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
-    printf("MyFunction Called\n");
-}
-
-#ifdef __cplusplus
-}
-#endif
