@@ -1,6 +1,6 @@
 DOCKERIMAGE:=emscripten/emsdk
 
-test: test_c
+test: clean test_c webserver
 
 test_c: compute
 	./compute input.json
