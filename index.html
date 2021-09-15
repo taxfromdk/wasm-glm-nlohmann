@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>wasm-glm-nlohman</title>
+        <script type="text/javascript">
+            
+
+            function init(a) 
+            {
+                console.log("We are loaded\n");
+            }
+
+            function compute()
+            {
+                var data = document.getElementById('myinput').value;
+
+                //data = compute(data, len(data))
+
+                document.getElementById('myoutput').value = data;
+            }
+
+
+        </script>        
+    </head>
+    <body onload="init();"> 
+        <textarea cols="80" rows="12" id="myinput">
+{
+    "a": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "b": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+    }
+}
+        </textarea>
+        <br>
+        <button id="mybutton" onclick="compute()">
+            COMPUTE!
+        </button>
+        <br>
+        <textarea cols="80" rows="12" id="myoutput"></textarea>        
+    </body>
+</html>
