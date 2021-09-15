@@ -14,9 +14,10 @@ webserver:
 compute: compute.cpp
 	g++ $^ -o $@
 
-compute.wasm: compute.cpp
-	docker run --rm -v $(shell pwd):/src -u $(shell id -u):$(shell id -g) $(DOCKERIMAGE) \
-	emcc -s STANDALONE_WASM --no-entry $< -o $@  \
+REMOVED = docker run --rm -v $(shell pwd):/src -u $(shell id -u):$(shell id -g) $(DOCKERIMAGE)
+
+compute.html: compute.cpp
+	emcc -s WASM=1 --no-entry $< -o $@  \
 	-s EXPORTED_FUNCTIONS="['_compute']"
 
 interactive: 

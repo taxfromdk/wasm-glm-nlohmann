@@ -1,4 +1,7 @@
 //#include <iostream>
+#include <stdio.h>
+#include <emscripten/emscripten.h>
+
 #define JSON_NO_IO
 #define JSON_NOEXCEPTION
 #include "json.hpp"
@@ -10,7 +13,7 @@ using namespace glm;
 using namespace nlohmann;
 
 
-void _compute(uint8_t* buffer, int l)
+void cpp_compute(uint8_t* buffer, int l)
 {
     //printf((char*)buffer);
 
@@ -41,11 +44,12 @@ void _compute(uint8_t* buffer, int l)
 }
   
 extern "C" {
-    void compute(uint8_t* buffer, int l) 
+EMSCRIPTEN_KEEPALIVE    void compute(uint8_t* buffer, int l) 
     {
-        _compute(buffer, l);    
+        cpp_compute(buffer, l);    
     }
 
+#if 0
     #define BUFFER_SIZE (1024*1024)
     int main(int argc, char* argv[])
     {
@@ -62,10 +66,30 @@ extern "C" {
     int n = fread(buffer, 1, BUFFER_SIZE, f);
     fclose(f);    
 
-    _compute(buffer, n);
+    cpp_compute(buffer, n);
 
     printf("%s", (char*)buffer);
 
     return 0;
     }
+#endif
 }
+
+
+#if 0
+int main() {
+    printf("Hello World\n");
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+EMSCRIPTEN_KEEPALIVE void myFunction(int argc, char ** argv) {
+    printf("MyFunction Called\n");
+}
+
+#ifdef __cplusplus
+}
+#endif
