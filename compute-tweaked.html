@@ -123,6 +123,28 @@
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     </div>
     <textarea id="output" rows="8"></textarea>
+        <h2 >myinput</h2>
+        <textarea cols="80" rows="12" id="myinput">
+{
+    "a": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "b": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+    }
+}
+        </textarea>
+        <br>
+        <button id="mybutton" onclick="compute()">
+            COMPUTE!
+        </button>
+        <br>
+        <h2 >myoutput</h2>
+        <textarea cols="80" rows="12" id="myoutput"></textarea>        
 
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
@@ -131,7 +153,19 @@
 
       var Module = {
         onRuntimeInitialized: (function() {
-                    alert("onRuntimeInitialized:");
+                console.log("onRuntimeInitialized start:");
+                var data = document.getElementById('myinput').value;
+
+                let fun =Module.cwrap(
+        "compute",
+        "string",
+        ["string", "number"],
+    );
+                     function len(s) {  return s.length; };
+                //data = compute(data, len(data))
+                data = fun(data, len(data));
+
+                document.getElementById('myoutput').value = data;
                 }),
         preRun: [],
         postRun: [],

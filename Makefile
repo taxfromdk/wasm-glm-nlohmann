@@ -18,7 +18,7 @@ REMOVED = docker run --rm -v $(shell pwd):/src -u $(shell id -u):$(shell id -g) 
 
 compute.html: compute.cpp
 	emcc -s WASM=1 --no-entry $< -o $@  \
-	-s EXPORTED_FUNCTIONS="['_compute']"
+	-s EXPORTED_RUNTIME_METHODS="['cwrap']" -s EXPORTED_FUNCTIONS="['_compute']"
 
 interactive: 
 	docker run -it --rm -v $(shell pwd):/src -u $(shell id -u):$(shell id -g) $(DOCKERIMAGE)

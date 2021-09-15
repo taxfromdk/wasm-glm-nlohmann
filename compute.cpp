@@ -13,7 +13,7 @@ using namespace glm;
 using namespace nlohmann;
 
 
-void cpp_compute(uint8_t* buffer, int l)
+uint8_t * cpp_compute(uint8_t* buffer, int l)
 {
     //printf((char*)buffer);
 
@@ -41,12 +41,13 @@ void cpp_compute(uint8_t* buffer, int l)
     //Serialize output
     //printf(output.dump(4).c_str());
     sprintf((char*)buffer, "%s", output.dump(4).c_str());    
+    return buffer;
 }
   
 extern "C" {
-EMSCRIPTEN_KEEPALIVE    void compute(uint8_t* buffer, int l) 
+EMSCRIPTEN_KEEPALIVE    uint8_t* compute(uint8_t* buffer, int l) 
     {
-        cpp_compute(buffer, l);    
+        return cpp_compute(buffer, l);    
     }
 
 #if 0
