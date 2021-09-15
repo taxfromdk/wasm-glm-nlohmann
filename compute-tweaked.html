@@ -154,18 +154,20 @@
       var Module = {
         onRuntimeInitialized: (function() {
                 console.log("onRuntimeInitialized start:");
-                var data = document.getElementById('myinput').value;
+                let data = document.getElementById('myinput').value;
 
-                let fun =Module.cwrap(
-        "compute",
-        "string",
-        ["string", "number"],
-    );
-                     function len(s) {  return s.length; };
+                let compute_func = Module.cwrap(
+                    "compute",
+                    "string",
+                    ["string", "number"],
+                );
+                function len(s) {  return s.length; };
                 //data = compute(data, len(data))
-                data = fun(data, len(data));
+                let out_data = compute_func(data, len(data));
 
-                document.getElementById('myoutput').value = data;
+                document.getElementById('myoutput').value = out_data;
+
+                return;
                 }),
         preRun: [],
         postRun: [],
