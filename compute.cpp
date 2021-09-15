@@ -8,7 +8,12 @@
 #include "json.hpp"
 #include "glm/glm.hpp"
 
+
+
 using namespace glm;
+
+#include "math.glsl"
+
 using namespace nlohmann;
 
 
@@ -27,7 +32,7 @@ uint8_t * cpp_compute(uint8_t* buffer, int l)
     //printf("b %f %f %f\n", b.x, b.y, b.z);
     
     //Do computation    
-    vec3 c = cross(a,b);
+    vec3 c = custom_function(a,b);
     //printf("c %f %f %f\n", c.x, c.y, c.z);
     
     //Simulate numerical process that will take a million iterations
